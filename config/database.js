@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const dbconnection = async()=>{
-    await mongoose.connect("REMOVED");
+    await mongoose.connect();
     console.log("database connection succesfully");
 }
 
