@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import jobRouter from "./Router/jobRouter.js";
 import dbconnection from "./config/database.js";
@@ -18,7 +19,7 @@ const startServer = async() => {
     try {
          await dbconnection();
 
-        app.listen(3000, () => {
+        app.listen(process.env.port,() => {
         console.log("Server is running on port 3000");
     });
     } catch (error) {
