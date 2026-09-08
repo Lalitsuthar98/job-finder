@@ -1,18 +1,22 @@
 export const normalizeAdzunaJob = (job) => {
+  let jobType = "full-time";
+
+  if (job.contract_time === "full_time") {
+    jobType = "full-time";
+  }
+
   return {
     title: job.title?.trim() || "Untitled Position",
 
-    company: job.company?.display_name?.trim() || "Unknown Company",
+    company:
+      job.company?.display_name?.trim() || "Unknown Company",
 
     location:
       job.location?.display_name?.trim() || "Not specified",
 
     skills: [],
 
-    jobType:
-      job.contract_time === "part_time"
-        ? "full-time"
-        : "full-time",
+    jobType,
 
     experience: undefined,
 

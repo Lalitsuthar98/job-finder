@@ -30,8 +30,33 @@
 // // Run the test
 // testAdzunaData();
 
+// import { searchAdzunaJobs } from "../services/adzunaService.js";
+// // import { normalizeAdzunaJob } from "../services/jobNormalizer.js";
+
+// const testAdzunaData = async () => {
+//   try {
+//     console.log("Fetching jobs from Adzuna... 🚀");
+
+//     const data = await searchAdzunaJobs("nodejs", "in", 1);
+
+//     console.log(`Total jobs: ${data.results?.length}`);
+
+//     console.log("\n=== FIRST RAW JOB ===");
+
+//    console.log(
+//     JSON.stringify(data.results?.[0], null, 2)
+//   );
+
+// console.log("\n=====================");
+//   } catch (error) {
+//     console.error("❌ Test failed:", error.message);
+//   }
+// };
+
+// testAdzunaData();
+
+
 import { searchAdzunaJobs } from "../services/adzunaService.js";
-import { normalizeAdzunaJob } from "../services/jobNormalizer.js";
 
 const testAdzunaData = async () => {
   try {
@@ -39,18 +64,16 @@ const testAdzunaData = async () => {
 
     const data = await searchAdzunaJobs("nodejs", "in", 1);
 
-    const normalizedata = data.results.map(normalizeAdzunaJob);
+    console.log(`Total jobs: ${data.results?.length}`);
 
-    console.log(`Normalized jobs: ${normalizedata.length}`);
+    console.log("\n=== FIRST RAW JOB ===");
 
-
-    console.log("\n=====================");
-    
     console.log(
-      JSON.stringify(normalizedata, null, 2)
+      JSON.stringify(data.results?.[0], null, 2)
     );
 
     console.log("\n=====================");
+
   } catch (error) {
     console.error("❌ Test failed:", error.message);
   }
