@@ -5,7 +5,7 @@ export const jobService  = async(normalizejob)=>{
      try {
           const existingjob = await JobModel.findOne({
             source:normalizejob.source,
-            applyUrl:normalizejob.applyUrl
+            externalJobId: normalizejob.externalJobId
           })
 
           if(existingjob){

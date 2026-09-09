@@ -11,6 +11,8 @@ export const normalizeAdzunaJob = (job) => {
     company:
       job.company?.display_name?.trim() || "Unknown Company",
 
+    externalJobId: String(job.id),
+    
     location:
       job.location?.display_name?.trim() || "Not specified",
 

@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import jobRouter from "./Router/jobRouter.js";
 import dbconnection from "./config/database.js";
+import { startJobScheduler } from "./jobs/jobScheduler.js";
 
 const app = express();
 
@@ -17,8 +18,12 @@ app.use("/job", jobRouter);
 const startServer = async() => {
     // await database connection  
     try {
+        // starting the databae connection
          await dbconnection();
 
+        // starting the jobscheduling 
+        startJobScheduler();
+        
         app.listen(process.env.port,() => {
         console.log("Server is running on port 3000");
     });

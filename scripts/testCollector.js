@@ -9,7 +9,7 @@ const testCollector = async()=>{
 
     await dbconnection();
     
-    const result = await collectionJobs("nodejs", "in", 1);
+    const result = await collectionJobs("nodejs", "in", 1,3);
 
     console.log("\n=== COLLECTION RESULT ===");
     console.log(result);

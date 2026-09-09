@@ -102,11 +102,15 @@ export const searchAdzunaJobs = async (
 
     return response.data;
   } catch (error) {
+    const status = error.response?.status;
+
     console.error("Adzuna API Error");
     console.error("Status:", error.response?.status);
     console.error("Response:", error.response?.data);
     console.error("Message:", error.message);
 
-    throw error;
+    throw new error(
+      `Adzuna API request failed${status ? ` with status ${status}` : ""}: ${error.message}`
+    );
   }
 };

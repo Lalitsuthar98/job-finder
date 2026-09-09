@@ -10,7 +10,10 @@ const jobSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
+    externalJobId: {
+        type: String,
+        required: true
+    },
     location: {
         type: String,
         required: true
@@ -58,7 +61,7 @@ const jobSchema = new mongoose.Schema({
 });
 
 jobSchema.index(
-    { source: 1, applyUrl: 1 },
+    { source: 1, externalJobId: 1 },
     { unique: true }
 );
 const JobModel = mongoose.model("Job", jobSchema);
