@@ -54,6 +54,7 @@
 import { searchAdzunaJobs } from "../services/adzunaService.js";
 import { normalizeAdzunaJob } from "../services/jobNormalizer.js";
 import { jobService } from "../services/jobService.js";
+import CollectorState from "../model/CollectorState_model.js";
 
 
 export const collectionJobs = async(
@@ -65,6 +66,21 @@ export const collectionJobs = async(
     try {
          const MAX_PAGES = 3;
          const pagesTofetch = Math.min(totalPagesRequested,MAX_PAGES);
+
+         // collectorstate 
+         const collectorState = await CollectorState.findOne({
+            source: "Adzuna",
+            keyword,
+            country,
+          }).lean();
+
+          const lastProcessedAt =
+              collectorState?.lastProcessedAt || null;
+
+           console.log(
+                "[Collector] Last processed at:",
+                lastProcessedAt
+               );
 
 
          console.log(`[collector] Starting multi-page pipeline for keyword  ${keyword}`)
@@ -84,6 +100,15 @@ export const collectionJobs = async(
             const rawdata = await searchAdzunaJobs(keyword,country,currentPage);
 
             const jobs = rawdata.results || [];
+
+             console.log(
+               jobs.slice(0, 5).map((job) => ({
+                id: job.id,
+                title: job.title,
+                created: job.created,
+              }))
+              );
+
 
             console.log(`[Page ${currentPage}] Received ${jobs.length} jobs.`);
 
@@ -115,6 +140,12 @@ export const collectionJobs = async(
          const normalizedJob =
             normalizeAdzunaJob(job);
 
+        // conditon of incremental 
+        if(lastProcessedAt && normalizedJob.postedAt <= lastProcessedAt){
+          totalSkipped++;
+          continue;
+        }
+        
           // Add to batch
           normalizedJobs.push(normalizedJob);
 
@@ -129,6 +160,49 @@ export const collectionJobs = async(
    }
   }
 }
+
+const newestJobDate = normalizedJobs.reduce(
+  (latest, job) => {
+    if (!latest) {
+      return job.postedAt;
+    }
+
+    return job.postedAt > latest
+      ? job.postedAt
+      : latest;
+  },
+  null
+);
+
+console.log(
+  "[Collector] Newest job date:",
+  newestJobDate
+);
+
+if (newestJobDate) {
+  await CollectorState.findOneAndUpdate(
+    {
+      source: "Adzuna",
+      keyword,
+      country,
+    },
+    {
+      $set: {
+        lastProcessedAt: newestJobDate,
+      },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+
+  console.log(
+    "[Collector] Collector state updated:",
+    newestJobDate
+  );
+}
+
 
 // Send whole Batch to service  
     console.log(

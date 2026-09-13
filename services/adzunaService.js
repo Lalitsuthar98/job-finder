@@ -97,6 +97,7 @@ export const searchAdzunaJobs = async (
         results_per_page: 20,
         what: keyword,
         where: "India",
+        sort_by: "date"
       },
     });
 
