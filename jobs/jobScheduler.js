@@ -3,7 +3,17 @@ import { collectionJobs } from "./jobCollector.js"
 
 export const startJobScheduler = ()=>{
 
+
+    let iscollecting = false;
     cron.schedule("*/2 * * * *",async()=>{
+          
+         if(iscollecting){
+            console.log("[Scheduler] Collection already running .Skipping...");
+            return;
+         }
+
+         iscollecting = true;
+
 
         console.log("\n⏰ Job collection started");
 

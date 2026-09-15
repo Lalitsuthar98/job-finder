@@ -86,11 +86,13 @@ export const collectionJobs = async(
          console.log(`[collector] Starting multi-page pipeline for keyword  ${keyword}`)
 
         console.log(`[Collector] Target Pages: ${startPage} to ${startPage + pagesTofetch - 1}`);
-
+          
+        const startTime = Date.now();
          const normalizedJobs = [];
-
+         
          let totalFetched = 0;
          let totalSkipped = 0;
+         let reachedOldBoundary = false;
          
         for(let i = 0 ; i < pagesTofetch ; i++){
             const currentPage = startPage + i;
@@ -143,6 +145,7 @@ export const collectionJobs = async(
         // conditon of incremental 
         if(lastProcessedAt && normalizedJob.postedAt <= lastProcessedAt){
           totalSkipped++;
+          reachedOldBoundary = true;
           continue;
         }
         
@@ -158,6 +161,12 @@ export const collectionJobs = async(
     );
     totalSkipped++;
    }
+  }
+  if(lastProcessedAt && reachedOldBoundary){
+    console.log(
+      `[Collector] Reached old job boundary. Stopping pagination.`
+    );
+    break;
   }
 }
 
@@ -193,7 +202,7 @@ if (newestJobDate) {
     },
     {
       upsert: true,
-      new: true,
+      returnDocument: "after",
     }
   );
 
@@ -210,7 +219,8 @@ if (newestJobDate) {
     );
 
     const result = await jobService(normalizedJobs);
-
+    
+    const duration = Date.now() - startTime;
     // --------------------------------
     // FINAL RESULT
     // --------------------------------
@@ -222,6 +232,7 @@ if (newestJobDate) {
       updated: result.updated,
       unchanged: result.unchanged,
       skipped: totalSkipped,
+      duration:`${(duration/1000).toFixed(2)}`,
     };
 
     } catch (error) {

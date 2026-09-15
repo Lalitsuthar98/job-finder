@@ -74,6 +74,7 @@
 
 import axios from "axios";
 import "dotenv/config";
+import retryOperation from "../utils/retryOperation.js";
 
 export const searchAdzunaJobs = async (
   keyword,
@@ -90,16 +91,18 @@ export const searchAdzunaJobs = async (
 
     const url = `https://api.adzuna.com/v1/api/jobs/${country}/search/${page}`;
 
-    const response = await axios.get(url, {
-      params: {
-        app_id: appId,
-        app_key: appKey,
-        results_per_page: 20,
-        what: keyword,
-        where: "India",
-        sort_by: "date"
-      },
-    });
+   const response = await retryOperation(() =>
+    axios.get(url, {
+        params: {
+            app_id: appId,
+            app_key: appKey,
+            results_per_page: 20,
+            what: keyword,
+            where: "India",
+            sort_by: "date",
+        },
+    })
+);
 
     return response.data;
   } catch (error) {
@@ -110,7 +113,7 @@ export const searchAdzunaJobs = async (
     console.error("Response:", error.response?.data);
     console.error("Message:", error.message);
 
-    throw new error(
+    throw new Error(
       `Adzuna API request failed${status ? ` with status ${status}` : ""}: ${error.message}`
     );
   }
