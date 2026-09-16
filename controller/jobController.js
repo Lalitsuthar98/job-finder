@@ -1,6 +1,8 @@
 import JobModel from "../model/Job_model.js";
 import mongoose from "mongoose";
 
+// controller code 
+
  const createJob = async(req,res)=>{
      if(!req.body){
         return res.status(400).json({

@@ -1,6 +1,7 @@
 import cron from "node-cron"
 import { collectionJobs } from "./jobCollector.js"
 
+// scheduler function code 
 export const startJobScheduler = ()=>{
 
 
