@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import jobRouter from "./Router/jobRouter.js";
+import userRouter from "./Router/userRouter.js";
 import dbconnection from "./config/database.js";
 import { startJobScheduler } from "./jobs/jobScheduler.js";
 
@@ -10,6 +11,7 @@ app.use(express.json());
 
 // app.use("/user", userRouter);
 app.use("/job", jobRouter);
+app.use("/user",userRouter);
 
 // app.use("/", (req, res) => {
 //     res.send("server is working");
