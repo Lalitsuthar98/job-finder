@@ -1,5 +1,4 @@
 // userController hold the user signup,login, logout,profile 
-import { email } from "zod";
 import user from "../model/user_model.js";
 import {signupSchema,loginSchema} from "../validator/User_validator.js"
 import bcrypt from "bcrypt"
@@ -25,7 +24,7 @@ const createToken = (id,email)=>{
  
 export const signup = async(req,res)=>{
   try {
-    const result = signupSchema.safeParse(req,body);
+    const result = signupSchema.safeParse(req.body);
 
     if(!result.success){
         return res.status(400).json({
@@ -51,7 +50,7 @@ export const signup = async(req,res)=>{
     const profile = await user.create({
         name,
         age,
-        hashpassword,
+        password: hashpassword,
         email,
         phone
     });
@@ -94,7 +93,7 @@ export const login = async(req,res)=>{
 
     const existingUser = await user.findOne({
         email
-    });
+    }).select("+password");
 
     if(!existingUser){
         return res.status(401).json({
@@ -103,7 +102,8 @@ export const login = async(req,res)=>{
     }
 
     const isMatch = await bcrypt.compare(
-        existingUser.password,password
+        password,
+        existingUser.password
     );
      
     if(!isMatch){
@@ -139,23 +139,25 @@ export const login = async(req,res)=>{
    }
 };
 
-export const profile = async(req,res)=>{
-    try {
-        return res.status(200).josn({
-            id:existingUser._id,
-            name:existingUser.name,
-            age:existingUser.age,
-            email:existingUser.email,
-            phone:existingUser.phone,
-            perferneces: existingUser.perferneces
-        })
-    } catch (error) {
-        console.log("Profile error:",error);
+export const profile = async (req, res) => {
+  try {
+    const existingUser = req.user;
 
-        return res.status(500).josn({
-            message:"Internal server error",
-        });
-    }
+    return res.status(200).json({
+      id: existingUser._id,
+      name: existingUser.name,
+      age: existingUser.age,
+      email: existingUser.email,
+      phone: existingUser.phone,
+      preferences: existingUser.preferences
+    });
+  } catch (error) {
+    console.log("Profile error:", error);
+
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
 };
 
 // DELETE ACCOUNT  

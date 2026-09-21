@@ -4,10 +4,12 @@ import jobRouter from "./Router/jobRouter.js";
 import userRouter from "./Router/userRouter.js";
 import dbconnection from "./config/database.js";
 import { startJobScheduler } from "./jobs/jobScheduler.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 // app.use("/user", userRouter);
 app.use("/job", jobRouter);
@@ -35,3 +37,31 @@ const startServer = async() => {
 };
 
 startServer();
+
+
+
+// checking the api for  
+
+// const app = express() 
+
+// app.use(express.json());
+// app.use(cookieParser());
+
+// app.use("/user", userRouter);
+
+// const PORT = process.env.port;
+
+// const startServer = async()=>{
+//     try {
+//         await dbconnection();
+
+//         app.listen(PORT,()=>{
+//             console.log("server running on port 9000");
+//         })
+//     } catch (error) {
+//         console.error("Server startup failed:", error.message);
+//     process.exit(1);
+//     }
+// };
+
+// startServer();

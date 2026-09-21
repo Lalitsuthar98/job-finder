@@ -35,6 +35,13 @@ export const authUserMiddleware = async(req,res,next)=>{
         const userdata = await user.findOne({
             _id:userid
         });
+        
+        if (!userdata) {
+            return res.status(401).json({
+            message: "User no longer exists"
+        });
+        }
+
         req.user = userdata;
         next()
 

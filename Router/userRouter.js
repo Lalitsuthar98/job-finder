@@ -10,7 +10,7 @@ const userRouter = express.Router();
 userRouter.patch("/preferences",authUserMiddleware,validate(updatePreferenceSchema),updatePreferences);
 userRouter.post("/signup",signup);
 userRouter.post("/login",login);
-userRouter.delete("deleteAccount",authUserMiddleware,deleteAccount);
+userRouter.delete("/deleteAccount",authUserMiddleware,deleteAccount);
 userRouter.get("/profile",authUserMiddleware,profile);
 userRouter.post("/logout",authUserMiddleware,logout);
 
