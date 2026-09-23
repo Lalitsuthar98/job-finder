@@ -71,3 +71,5 @@ export const extractSkills = (text) => {
 
   return [...matchedSkills];
 };
+
+// this is skillExtractor.js  

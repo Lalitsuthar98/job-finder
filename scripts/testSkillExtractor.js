@@ -24,3 +24,5 @@ for (const text of testCases) {
 
   console.log("Extracted skills:", skills);
 }
+
+// this is testskillExrtactor  
