@@ -31,7 +31,9 @@ const jobSchema = new mongoose.Schema({
     },
 
     experience: {
-        type: String
+        type: String,
+        enum:["fresher","junior","mid","senior"],
+        default:null
     },
 
     salary: {

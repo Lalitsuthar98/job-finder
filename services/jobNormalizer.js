@@ -1,4 +1,17 @@
+import { extractSkills } from "./skillExtractor.js";
+import { extractExperience } from "./experienceExtractor.js";
+
 export const normalizeAdzunaJob = (job) => {
+
+
+  // create combined text  
+  const text = `${job.title || ""} ${job.description || ""}`;
+  
+  // Extract skills and experince 
+  const skills = extractSkills(text);
+  const experience = extractExperience(text);
+
+
   let jobType = "full-time";
 
   if (job.contract_time === "full_time") {
@@ -16,11 +29,11 @@ export const normalizeAdzunaJob = (job) => {
     location:
       job.location?.display_name?.trim() || "Not specified",
 
-    skills: [],
+    skills,
 
     jobType,
 
-    experience: undefined,
+    experience,
 
     salary:
       job.salary_min || job.salary_max
