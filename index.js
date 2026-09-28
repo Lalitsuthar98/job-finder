@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import jobRouter from "./Router/jobRouter.js";
 import userRouter from "./Router/userRouter.js";
+import applicationRouter from "./Router/applicationRouter.js";
 import dbconnection from "./config/database.js";
 import { startJobScheduler } from "./jobs/jobScheduler.js";
 import cookieParser from "cookie-parser";
@@ -14,6 +15,7 @@ app.use(cookieParser());
 // app.use("/user", userRouter);
 app.use("/job", jobRouter);
 app.use("/user",userRouter);
+app.use("/application",applicationRouter);
 
 // app.use("/", (req, res) => {
 //     res.send("server is working");
