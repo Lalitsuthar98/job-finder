@@ -99,37 +99,49 @@ export const getSingleApplicationController = async (req, res) => {
   }
 };
 
-export const updateApplicationStatusController = async(req,res)=>{
-    try {
-        const userId = req.user._id;
-        const {id:applicationId} = req.params;
-        const {status} = req.body;
+export const updateApplicationStatusController = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { id: applicationId } = req.params;
+    const { status } = req.body;
 
-        if(!status){
-            return res.status(400).json({
-                success:false,
-                message:"Status is required",
-            });
-        }
+    if (!status) {
+      return res.status(400).json({
+        success: false,
+        message: "Status is required",
+      });
+    }
 
-        const application = await updateApplicationStatus(
-            userId,
-            applicationId,
-            status
-        );
+    const application = await updateApplicationStatus(
+      userId,
+      applicationId,
+      status
+    );
 
-        return res.status(200).json({
-            success:true,
-            message:"Application status updated successfully",
-            application,
-        });
-    } catch (error) {
-        console.error("Update application status error:",error.message);
+    return res.status(200).json({
+      success: true,
+      message: "Application status updated successfully",
+      application,
+    });
+  } catch (error) {
+    console.error(
+      "Update application status error:",
+      error.message
+    );
 
-        
-    };
+    if (error.message === "Application not found") {
+      return res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    }
 
-}
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update application status",
+    });
+  }
+};
 // POST /application
     //    ↓
 // Authentication middleware

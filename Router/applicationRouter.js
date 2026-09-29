@@ -1,6 +1,14 @@
 import express from "express";
-import { applyToJobController,getUserApplicationsController,getSingleApplicationController} from "../controller/applicationController.js";
+import { 
+    applyToJobController,
+    getUserApplicationsController,
+    getSingleApplicationController,updateApplicationStatusController
+} from "../controller/applicationController.js";
 import { authUserMiddleware } from "../middleware/Autheticate_middleware.js";
+import validate from "../middleware/validate.js";
+import {
+  updateApplicationStatusSchema,
+} from "../validator/applicationValidator.js";
 
 const applicationRouter = express.Router();
 
@@ -20,6 +28,13 @@ applicationRouter.get(
   "/:id",
   authUserMiddleware,
   getSingleApplicationController
+);
+
+applicationRouter.patch(
+  "/:id/status",
+  authUserMiddleware,
+  validate(updateApplicationStatusSchema),
+  updateApplicationStatusController
 );
 
 export default applicationRouter;
