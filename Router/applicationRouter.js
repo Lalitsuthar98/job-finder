@@ -30,6 +30,8 @@ applicationRouter.get(
   getSingleApplicationController
 );
 
+// application patch 
+
 applicationRouter.patch(
   "/:id/status",
   authUserMiddleware,
@@ -53,3 +55,4 @@ export default applicationRouter;
 //       ↓
 // Create Application
 
+// this application router 
