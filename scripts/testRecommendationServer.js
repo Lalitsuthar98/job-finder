@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import dbconnection from "../config/database.js";
 import jobRouter from "../Router/jobRouter.js";
 import userRouter from "../Router/userRouter.js";
+import applicationRouter from "../Router/applicationRouter.js"
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(cookieParser());
 
 app.use("/job", jobRouter);
 app.use("/user", userRouter);
+app.use("/application",applicationRouter);
 
 const startTestServer = async () => {
   try {

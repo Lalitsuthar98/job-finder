@@ -8,6 +8,7 @@ import { authUserMiddleware } from "../middleware/Autheticate_middleware.js";
 import validate from "../middleware/validate.js";
 import {
   updateApplicationStatusSchema,
+  applicationFilterSchema
 } from "../validator/applicationValidator.js";
 
 const applicationRouter = express.Router();
@@ -21,6 +22,7 @@ applicationRouter.post(
 applicationRouter.get(
   "/",
   authUserMiddleware,
+  validate(applicationFilterSchema),
   getUserApplicationsController
 );
 

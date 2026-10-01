@@ -1,4 +1,4 @@
-import { success } from "zod";
+
 import { applyToJob,getUserApplications,getSingleApplication,updateApplicationStatus } from "../services/applicationService.js";
 
 export const applyToJobController = async (req, res) => {
@@ -47,8 +47,12 @@ export const applyToJobController = async (req, res) => {
 export const getUserApplicationsController = async (req, res) => {
   try {
     const userId = req.user._id;
+    const {status} = req.query;
 
-    const applications = await getUserApplications(userId);
+    const applications = await getUserApplications(
+      userId,
+      status
+    );
 
     return res.status(200).json({
       success: true,
@@ -105,13 +109,6 @@ export const updateApplicationStatusController = async (req, res) => {
     const { id: applicationId } = req.params;
     const { status } = req.body;
 
-    if (!status) {
-      return res.status(400).json({
-        success: false,
-        message: "Status is required",
-      });
-    }
-
     const application = await updateApplicationStatus(
       userId,
       applicationId,
@@ -124,13 +121,17 @@ export const updateApplicationStatusController = async (req, res) => {
       application,
     });
   } catch (error) {
-    console.error(
-      "Update application status error:",
-      error.message
-    );
+    console.error("Update application status error:", error.message);
 
     if (error.message === "Application not found") {
       return res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    if (error.message.startsWith("Cannot change status")) {
+      return res.status(400).json({
         success: false,
         message: error.message,
       });

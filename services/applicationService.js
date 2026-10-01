@@ -35,6 +35,8 @@ export const getUserApplications = async(userId) =>{
     const applications = await Application.find({
         user:userId,
     }).populate("job");
+
+    return applications;
 }
 
 export const getSingleApplication = async (userId, applicationId) => {
@@ -64,10 +66,24 @@ export const updateApplicationStatus = async (
     throw new Error("Application not found");
   }
 
+  const currentStatus = application.status;
+
+  const allowedTransitions = {
+    applied: ["interview", "rejected"],
+    interview: ["selected", "rejected"],
+    selected: [],
+    rejected: [],
+  };
+
+  if (!allowedTransitions[currentStatus].includes(newStatus)) {
+    throw new Error(
+      `Cannot change status from ${currentStatus} to ${newStatus}`
+    );
+  }
+
   application.status = newStatus;
 
   await application.save();
 
   return application;
 };
-
